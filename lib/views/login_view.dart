@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learningdart/constants/routes.dart';
+import 'package:learningdart/services/auth/auth_exception.dart';
+import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/utilties/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -72,15 +73,19 @@ class _LoginViewState extends State<LoginView> {
                 } else if (password == "") {
                   return await showErrorDialog(context, "Email is required");
                 }
-                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                await AuthService.firebase().logIn(
                   email: email,
                   password: password,
                 );
                 Navigator.of(
                   context,
                 ).pushNamedAndRemoveUntil(homeRoute, (route) => false);
-              } on FirebaseAuthException catch (e) {
-                await showErrorDialog(context, e.code);
+              } on UserNotFoundAuthException {
+                await showErrorDialog(context, "User not found");
+              } on WrongPasswordAuthException {
+                await showErrorDialog(context, "Wrong Password");
+              } on GenericAuthException {
+                await showErrorDialog(context, "Authentication error");
               }
             },
             child: Text("Login"),

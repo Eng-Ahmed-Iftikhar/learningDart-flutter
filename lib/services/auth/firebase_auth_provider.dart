@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:learningdart/firebase_options.dart';
 import 'package:learningdart/services/auth/auth_exception.dart';
 import 'package:learningdart/services/auth/auth_provider.dart';
 import 'package:learningdart/services/auth/auth_user.dart';
@@ -90,4 +92,8 @@ class FirebaseAuthProvider implements AuthProvider {
       throw UserNotLoggedInAuthException();
     }
   }
+
+  @override
+  Future<void> initialize() =>
+      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
