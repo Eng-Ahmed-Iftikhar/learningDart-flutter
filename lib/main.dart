@@ -1,9 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/firebase_options.dart';
+import 'package:learningdart/views/email_verfication_view.dart';
 import 'package:learningdart/views/home_view.dart';
 import 'package:learningdart/views/login_view.dart';
+import 'package:learningdart/views/register_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,17 +25,21 @@ class MyApp extends StatelessWidget {
         options: DefaultFirebaseOptions.currentPlatform,
       ),
       builder: (context, snapshot) {
-        final auth = FirebaseAuth.instance;
-        final user = auth.currentUser;
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             return MaterialApp(
               title: 'Flutter Demo',
               theme: ThemeData(primarySwatch: Colors.blue),
-              home: user != null ? HomeView() : LoginView(),
+              initialRoute: "/",
+              routes: {
+                "/": (context) => HomeView(),
+                "/login": (context) => LoginView(),
+                "/register": (context) => RegisterView(),
+                "/email-verfication": (context) => EmailVerficationView(),
+              },
             );
           default:
-            return Text("loading");
+            return CircularProgressIndicator();
         }
       },
     );
