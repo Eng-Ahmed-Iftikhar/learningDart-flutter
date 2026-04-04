@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:learningdart/constants/routes.dart';
+import 'package:learningdart/utilties/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -65,17 +67,20 @@ class _LoginViewState extends State<LoginView> {
               try {
                 final email = _email.text;
                 final password = _password.text;
+                if (email == "") {
+                  return await showErrorDialog(context, "Email is required");
+                } else if (password == "") {
+                  return await showErrorDialog(context, "Email is required");
+                }
                 await FirebaseAuth.instance.signInWithEmailAndPassword(
                   email: email,
                   password: password,
                 );
-
                 Navigator.of(
                   context,
-                ).pushNamedAndRemoveUntil("/", (route) => false);
+                ).pushNamedAndRemoveUntil(homeRoute, (route) => false);
               } on FirebaseAuthException catch (e) {
-                print("something bad happen");
-                print(e.code);
+                await showErrorDialog(context, e.code);
               }
             },
             child: Text("Login"),
@@ -84,7 +89,7 @@ class _LoginViewState extends State<LoginView> {
             onPressed: () {
               Navigator.of(
                 context,
-              ).pushNamedAndRemoveUntil("/register", (route) => false);
+              ).pushNamedAndRemoveUntil(registerRoute, (route) => false);
             },
             child: Text("Not registered yet? register here"),
           ),

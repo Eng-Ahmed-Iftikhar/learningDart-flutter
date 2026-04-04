@@ -1,12 +1,11 @@
-import 'dart:developer';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learningdart/firebase_options.dart';
-import 'package:learningdart/views/email_verfication_view.dart';
+import 'package:learningdart/views/email_verification_view.dart';
 import 'package:learningdart/views/home_view.dart';
 import 'package:learningdart/views/login_view.dart';
 import 'package:learningdart/views/register_view.dart';
+import 'constants/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,10 +31,10 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(primarySwatch: Colors.blue),
               initialRoute: "/",
               routes: {
-                "/": (context) => HomeView(),
-                "/login": (context) => LoginView(),
-                "/register": (context) => RegisterView(),
-                "/email-verfication": (context) => EmailVerficationView(),
+                homeRoute: (context) => HomeView(),
+                loginRoute: (context) => LoginView(),
+                registerRoute: (context) => RegisterView(),
+                emailVerificationRoute: (context) => EmailVerificationView(),
               },
             );
           default:

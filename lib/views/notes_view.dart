@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:learningdart/constants/routes.dart';
 
 enum MenuAction { logout }
 
@@ -13,6 +13,8 @@ class NotesView extends StatefulWidget {
 }
 
 class _NotesViewState extends State<NotesView> {
+  final user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +33,7 @@ class _NotesViewState extends State<NotesView> {
           statusBarIconBrightness: Brightness.light,
         ),
         actions: [
-          PopupMenuButton(
+          PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               switch (value) {
                 case MenuAction.logout:
@@ -40,19 +42,22 @@ class _NotesViewState extends State<NotesView> {
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(
                       context,
-                    ).pushNamedAndRemoveUntil("/login", (route) => false);
+                    ).pushNamedAndRemoveUntil(loginRoute, (route) => false);
                   }
                   break;
               }
             },
             itemBuilder: (context) {
               return [
+                PopupMenuItem(child: Text(user?.email ?? "")),
+                PopupMenuDivider(),
                 PopupMenuItem<MenuAction>(
                   value: MenuAction.logout,
                   child: Text("Logout"),
                 ),
               ];
             },
+            iconColor: Colors.white,
           ),
         ],
       ),

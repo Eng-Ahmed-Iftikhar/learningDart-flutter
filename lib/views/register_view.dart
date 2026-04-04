@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:learningdart/utilties/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -57,16 +58,26 @@ class _RegisterViewState extends State<RegisterView> {
           ),
           TextButton(
             onPressed: () async {
-              final email = _email.text;
-              final password = _password.text;
-              await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                email: email,
-                password: password,
-              );
+              try {
+                final email = _email.text;
+                final password = _password.text;
 
-              Navigator.of(
-                context,
-              ).pushNamedAndRemoveUntil("/", (route) => false);
+                if (email == "") {
+                  return await showErrorDialog(context, "Email is required");
+                } else if (password == "") {
+                  return await showErrorDialog(context, "Email is required");
+                }
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
+
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil("/", (route) => false);
+              } on FirebaseAuthException catch (e) {
+                showErrorDialog(context, e.code);
+              }
             },
             child: Text("Register"),
           ),
