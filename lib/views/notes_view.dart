@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learningdart/constants/routes.dart';
+import 'package:learningdart/utilties/show_logout_dialog.dart';
 
 enum MenuAction { logout }
 
@@ -64,30 +65,4 @@ class _NotesViewState extends State<NotesView> {
       body: Text("sfsdf"),
     );
   }
-}
-
-Future<bool> showLogoutDialog(BuildContext context) {
-  return showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text("Sign out"),
-        content: Text("Are you sure you want to sign out?"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: Text("Logout"),
-          ),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
 }

@@ -14,7 +14,7 @@ class HomeView extends StatelessWidget {
     if (auth.currentUser == null) {
       return LoginView();
     }
-    if (auth.currentUser?.emailVerified == true) {
+    if (auth.currentUser?.emailVerified == false) {
       return EmailVerificationView();
     }
     return NotesView();
