@@ -3,7 +3,7 @@ import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/views/email_verification_view.dart';
 import 'package:learningdart/views/home_view.dart';
 import 'package:learningdart/views/login_view.dart';
-import 'package:learningdart/views/notes/new_note_view.dart';
+import 'package:learningdart/views/notes/create_update_note_view.dart';
 import 'package:learningdart/views/register_view.dart';
 
 import 'constants/routes.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
                 loginRoute: (context) => LoginView(),
                 registerRoute: (context) => RegisterView(),
                 emailVerificationRoute: (context) => EmailVerificationView(),
-                newNoteRoute: (context) => NewNoteView(),
+                createOrUpdateNoteRoute: (context) => CreateUpdateNoteView(),
               },
             );
           default:

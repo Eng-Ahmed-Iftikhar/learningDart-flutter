@@ -4,24 +4,34 @@ import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/services/note/database_note.dart';
 import 'package:learningdart/services/note/notes_service.dart';
 import 'package:learningdart/services/user/user_service.dart';
+import 'package:learningdart/utilties/generics/get_arguments.dart';
 
-class NewNoteView extends StatefulWidget {
-  const NewNoteView({super.key});
+class CreateUpdateNoteView extends StatefulWidget {
+  const CreateUpdateNoteView({super.key});
 
   @override
-  State<NewNoteView> createState() => _NewNoteViewState();
+  State<CreateUpdateNoteView> createState() => _CreateUpdateNoteViewState();
 }
 
-class _NewNoteViewState extends State<NewNoteView> {
+class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   DatabaseNote? _note;
   late final TextEditingController _textController;
 
-  Future<DatabaseNote> createNewNote() async {
+  Future<DatabaseNote> createOrGetNote(BuildContext context) async {
+    final widgetNote = context.getArgument<DatabaseNote>();
+    if (widgetNote != null) {
+      _note = widgetNote;
+      _textController.text = widgetNote.text;
+      return widgetNote;
+    }
+
     if (_note != null) return _note!;
     final currentUser = AuthService.firebase().currentUser;
     final email = currentUser?.email;
     final owner = await UserService.database().getUser(email: email!);
-    return await NotesService.database().createNote(owner: owner);
+    final newNote = await NotesService.database().createNote(owner: owner);
+    _note = newNote;
+    return newNote;
   }
 
   void _deleteNoteIfTextIsEmpty() {
@@ -45,7 +55,7 @@ class _NewNoteViewState extends State<NewNoteView> {
       return;
     }
     final text = _textController.text;
-    print(text);
+
     await NotesService.database().updateNote(note: note, text: text);
   }
 
@@ -88,12 +98,10 @@ class _NewNoteViewState extends State<NewNoteView> {
         ),
       ),
       body: FutureBuilder(
-        future: createNewNote(),
+        future: createOrGetNote(context),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              _note = snapshot.data as DatabaseNote;
-
               _setupTextControllerListener();
               return TextField(
                 controller: _textController,
