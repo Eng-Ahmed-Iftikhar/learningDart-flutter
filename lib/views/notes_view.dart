@@ -3,6 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:learningdart/constants/routes.dart';
 import 'package:learningdart/enums/menu_action.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
+import 'package:learningdart/services/auth/auth_user.dart';
+import 'package:learningdart/services/datebase/database_service.dart';
+import 'package:learningdart/services/note/notes_service.dart';
+import 'package:learningdart/services/user/user_service.dart';
 import 'package:learningdart/utilties/show_logout_dialog.dart';
 
 class NotesView extends StatefulWidget {
@@ -13,7 +17,21 @@ class NotesView extends StatefulWidget {
 }
 
 class _NotesViewState extends State<NotesView> {
-  final user = AuthService.firebase().currentUser;
+  late final DatabaseService _databaseService;
+  AuthUser get user => AuthService.firebase().currentUser!;
+
+  @override
+  void initState() {
+    _databaseService = DatabaseService();
+    _databaseService.open();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _databaseService.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +67,7 @@ class _NotesViewState extends State<NotesView> {
             },
             itemBuilder: (context) {
               return [
-                PopupMenuItem(child: Text(user?.email ?? "")),
+                PopupMenuItem(child: Text(user.email ?? "")),
                 PopupMenuDivider(),
                 PopupMenuItem<MenuAction>(
                   value: MenuAction.logout,
@@ -61,7 +79,29 @@ class _NotesViewState extends State<NotesView> {
           ),
         ],
       ),
-      body: Text("sfsdf"),
+      body: FutureBuilder(
+        future: UserService.database().getOrCreateUser(email: user.email!),
+        builder: (context, snapshot) {
+          print(snapshot.connectionState);
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return StreamBuilder(
+                stream: NotesService.database().allNotes,
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Text("Waiting for all notes");
+
+                    default:
+                      return CircularProgressIndicator();
+                  }
+                },
+              );
+            default:
+              return CircularProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }

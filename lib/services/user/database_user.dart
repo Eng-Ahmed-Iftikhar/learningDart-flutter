@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:learningdart/services/datebase/database_contants.dart';
+import 'package:learningdart/services/datebase/database_constants.dart';
 import 'package:learningdart/services/user/user_constants.dart';
 
 @immutable

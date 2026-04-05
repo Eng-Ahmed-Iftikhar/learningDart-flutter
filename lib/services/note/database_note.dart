@@ -1,4 +1,4 @@
-import 'package:learningdart/services/datebase/database_contants.dart';
+import 'package:learningdart/services/datebase/database_constants.dart';
 import 'package:learningdart/services/note/note_constants.dart';
 
 class DatabaseNote {
