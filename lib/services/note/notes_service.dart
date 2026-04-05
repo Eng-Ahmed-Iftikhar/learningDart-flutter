@@ -8,17 +8,26 @@ import 'package:learningdart/services/datebase/database_service.dart';
 import 'package:learningdart/services/user/database_user.dart';
 import 'package:learningdart/services/user/user_service.dart';
 
-class NotesService extends DatabaseService {
+class NotesService {
   final UserService userService;
   final DatabaseService databaseService;
   List<DatabaseNote> _notes = [];
-  final _noteStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
 
-  NotesService(this.databaseService, this.userService);
+  late final StreamController<List<DatabaseNote>> _noteStreamController;
 
-  factory NotesService.database() =>
-      NotesService(DatabaseService(), UserService(DatabaseService()));
+  static final NotesService _shared = NotesService._sharedInstance();
+
+  NotesService._sharedInstance()
+    : userService = UserService.database(),
+      databaseService = DatabaseService() {
+    _noteStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _noteStreamController.sink.add(_notes);
+      },
+    );
+  }
+
+  factory NotesService.database() => _shared;
 
   Stream<List<DatabaseNote>> get allNotes => _noteStreamController.stream;
 
@@ -76,6 +85,7 @@ class NotesService extends DatabaseService {
     );
     _notes.add(note);
     _noteStreamController.add(_notes);
+    print("_noteStreamController");
     return note;
   }
 
@@ -119,6 +129,7 @@ class NotesService extends DatabaseService {
       where: "id = ?",
       whereArgs: [note.id],
     );
+
     if (updateCount == 0) {
       throw CouldNotUpdateNote();
     }

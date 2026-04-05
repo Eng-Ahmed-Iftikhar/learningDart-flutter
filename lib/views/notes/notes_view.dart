@@ -5,9 +5,11 @@ import 'package:learningdart/enums/menu_action.dart';
 import 'package:learningdart/services/auth/auth_service.dart';
 import 'package:learningdart/services/auth/auth_user.dart';
 import 'package:learningdart/services/datebase/database_service.dart';
+import 'package:learningdart/services/note/database_note.dart';
 import 'package:learningdart/services/note/notes_service.dart';
 import 'package:learningdart/services/user/user_service.dart';
 import 'package:learningdart/utilties/show_logout_dialog.dart';
+import 'package:learningdart/views/notes/notes_list_view.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -18,19 +20,15 @@ class NotesView extends StatefulWidget {
 
 class _NotesViewState extends State<NotesView> {
   late final DatabaseService _databaseService;
+
   AuthUser get user => AuthService.firebase().currentUser!;
 
   @override
   void initState() {
     _databaseService = DatabaseService();
     _databaseService.open();
-    super.initState();
-  }
 
-  @override
-  void dispose() {
-    _databaseService.close();
-    super.dispose();
+    super.initState();
   }
 
   @override
@@ -94,10 +92,23 @@ class _NotesViewState extends State<NotesView> {
               return StreamBuilder(
                 stream: NotesService.database().allNotes,
                 builder: (context, snapshot) {
+                  print(snapshot.data);
                   switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
                     case ConnectionState.active:
-                      return Text("Waiting for all notes");
+                      if (snapshot.hasData) {
+                        final allNotes = snapshot.data as List<DatabaseNote>;
+
+                        return NotesListView(
+                          notes: allNotes,
+                          onDeleteNote: (note) async {
+                            await NotesService.database().deleteNote(
+                              id: note.id,
+                            );
+                          },
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
 
                     default:
                       return CircularProgressIndicator();

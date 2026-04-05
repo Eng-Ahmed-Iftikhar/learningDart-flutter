@@ -10,9 +10,9 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseService implements DatabaseProvider {
   Database? _db;
-  // static final DatabaseService _shared = DatabaseService._sharedInstance();
-  // DatabaseService._sharedInstance();
-  // factory DatabaseService() => _shared;
+  static final DatabaseService _shared = DatabaseService._sharedInstance();
+  DatabaseService._sharedInstance();
+  factory DatabaseService() => _shared;
 
   @override
   Database get getDatabaseOrThrow {

@@ -45,6 +45,7 @@ class _NewNoteViewState extends State<NewNoteView> {
       return;
     }
     final text = _textController.text;
+    print(text);
     await NotesService.database().updateNote(note: note, text: text);
   }
 
@@ -92,6 +93,7 @@ class _NewNoteViewState extends State<NewNoteView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _note = snapshot.data as DatabaseNote;
+
               _setupTextControllerListener();
               return TextField(
                 controller: _textController,

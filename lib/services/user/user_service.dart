@@ -4,11 +4,14 @@ import 'package:learningdart/services/user/database_user.dart';
 import 'package:learningdart/services/user/user_constants.dart';
 import 'package:learningdart/services/user/user_exception.dart';
 
-class UserService extends DatabaseService {
-  DatabaseService databaseService;
-  UserService(this.databaseService);
+class UserService {
+  final DatabaseService databaseService;
 
-  factory UserService.database() => UserService(DatabaseService());
+  static final UserService _shared = UserService._sharedInstance();
+
+  UserService._sharedInstance() : databaseService = DatabaseService();
+
+  factory UserService.database() => _shared;
 
   Future<void> deleteUser({required String email}) async {
     await databaseService.ensureDbIsOpen();
