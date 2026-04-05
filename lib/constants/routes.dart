@@ -2,3 +2,4 @@ const homeRoute = "/";
 const loginRoute = "/login";
 const registerRoute = "/register";
 const emailVerificationRoute = "/email-verification";
+const newNoteRoute = "/notes/new";

@@ -5,23 +5,25 @@ class DatabaseNote {
   final int id;
   final int userId;
   final String text;
-  final bool isSyncWithCloud;
+  final bool isSyncedWithCloud;
   DatabaseNote({
     required this.id,
     required this.userId,
     required this.text,
-    required this.isSyncWithCloud,
+    required this.isSyncedWithCloud,
   });
 
   DatabaseNote.fromRow(Map<String, Object?> map)
     : id = map[idColumn] as int,
       userId = map[userIdColumn] as int,
       text = map[textColumn] as String,
-      isSyncWithCloud = (map[isSyncWithCloudColumn] as int) == 1 ? true : false;
+      isSyncedWithCloud = (map[isSyncedWithCloudColumn] as int) == 1
+          ? true
+          : false;
 
   @override
   String toString() =>
-      'Person, ID = $id, userif = $userId, isSyncWithCloud= $isSyncWithCloud,text= $text';
+      'Person, ID = $id, userif = $userId, isSyncedWithCloud= $isSyncedWithCloud,text= $text';
 
   @override
   bool operator ==(covariant DatabaseNote other) => id == other.id;

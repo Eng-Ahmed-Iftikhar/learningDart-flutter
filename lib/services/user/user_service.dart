@@ -43,10 +43,8 @@ class UserService extends DatabaseService {
 
   Future<DatabaseUser> getOrCreateUser({required String email}) async {
     try {
-      print("getting user ");
       return await getUser(email: email);
     } on CouldNotFindUser {
-      print("create user ");
       return await createUser(email: email);
     } catch (e) {
       rethrow;
@@ -55,7 +53,6 @@ class UserService extends DatabaseService {
 
   Future<DatabaseUser> getUser({required String email}) async {
     await databaseService.ensureDbIsOpen();
-    print("results");
 
     final db = databaseService.getDatabaseOrThrow;
     final results = await db.query(
@@ -64,7 +61,7 @@ class UserService extends DatabaseService {
       limit: 1,
       whereArgs: [email.toLowerCase()],
     );
-    print(results);
+
     if (results.isEmpty) {
       throw CouldNotFindUser();
     }

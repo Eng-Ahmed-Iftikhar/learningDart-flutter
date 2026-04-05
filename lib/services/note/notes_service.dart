@@ -65,14 +65,14 @@ class NotesService extends DatabaseService {
     final id = await db.insert(noteTable, {
       userIdColumn: owner.id,
       textColumn: text,
-      isSyncWithCloudColumn: 1,
+      isSyncedWithCloudColumn: 1,
     });
 
     final note = DatabaseNote(
       id: id,
       text: text,
       userId: dbUser.id,
-      isSyncWithCloud: true,
+      isSyncedWithCloud: true,
     );
     _notes.add(note);
     _noteStreamController.add(_notes);
@@ -115,7 +115,7 @@ class NotesService extends DatabaseService {
 
     final updateCount = await db.update(
       noteTable,
-      {textColumn: text, isSyncWithCloudColumn: 0},
+      {textColumn: text, isSyncedWithCloudColumn: 0},
       where: "id = ?",
       whereArgs: [note.id],
     );
